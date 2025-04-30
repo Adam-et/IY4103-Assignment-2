@@ -1,38 +1,39 @@
 {% extends "base.html" %}
-{% block title %}Create Manga{% endblock %}
+{% block title %}Edit Manga{% endblock %}
 {% block content %}
 
 <div class="row justify-content-center">
     <div class="col-md-8">
         <div class="card shadow">
             <div class="card-header bg-primary text-white">
-                <h4 class="mb-0">Add New Manga</h4>
+                <h4 class="mb-0">Edit Manga</h4>
             </div>
             <div class="card-body">
-                <form method="POST" action="{{ url_for('create_manga') }}">
+                <form method="POST" action="{{ url_for('edit_manga', manga_id=manga.id) }}">
                     <div class="mb-3">
                         <label for="manga_name" class="form-label">Manga Name</label>
-                        <input type="text" class="form-control" id="manga_name" name="manga_name" required>
+                        <input type="text" class="form-control" id="manga_name" name="manga_name" value="{{ manga.name }}" required>
                     </div>
                     <div class="mb-3">
                         <label for="price" class="form-label">Price ($)</label>
-                        <input type="number" step="0.01" min="0" class="form-control" id="price" name="price" required>
+                        <input type="number" step="0.01" min="0" class="form-control" id="price" name="price" value="{{ manga.price }}" required>
                     </div>
                     <div class="mb-3">
                         <label for="author" class="form-label">Author</label>
-                        <input type="text" class="form-control" id="author" name="author" required>
+                        <input type="text" class="form-control" id="author" name="author" value="{{ manga.author }}" required>
                     </div>
                     <div class="mb-3">
                         <label for="description" class="form-label">Description</label>
-                        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                        <textarea class="form-control" id="description" name="description" rows="3">{{ manga.description }}</textarea>
                     </div>
                     <div class="mb-3">
                         <label for="image" class="form-label">Image URL</label>
-                        <input type="url" class="form-control" id="image" name="image" placeholder="https://example.com/image.jpg">
+                        <input type="url" class="form-control" id="image" name="image" value="{{ manga.image }}" placeholder="https://example.com/image.jpg">
                         <div class="form-text">Enter a URL for the manga cover image</div>
                     </div>
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-primary">Add Manga</button>
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('manga_detail', manga_id=manga.id) }}" class="btn btn-outline-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Update Manga</button>
                     </div>
                 </form>
             </div>
