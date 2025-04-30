@@ -1,7 +1,60 @@
 {% extends "base.html" %}
-{% block title %}Manga{% endblock %}
+{% block title %}Manga Collection{% endblock %}
+
 {% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-5 fw-bold">Manga Collection</h1>
+            <p class="lead">Browse through our extensive collection of manga titles.</p>
+        </div>
+    </div>
 
-<h1>Manga</h1>
-
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        {% for manga in manga_list %}
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                {% if manga.image %}
+                <img src="{{ manga.image }}" class="card-img-top" alt="{{ manga.name }}">
+                {% else %}
+                <div class="bg-secondary text-white d-flex justify-content-center align-items-center" style="height: 200px;">
+                    <i class="fas fa-book fa-3x"></i>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ manga.name }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">by {{ manga.author }}</h6>
+                    <p class="card-text">
+                        {% if manga.description %}
+                            {{ manga.description[:100] }}{% if manga.description|length > 100 %}...{% endif %}
+                        {% else %}
+                            No description available.
+                        {% endif %}
+                    </p>
+                    <p class="card-text fw-bold">${{ "%.2f"|format(manga.price) }}</p>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="{{ url_for('manga_detail', manga_id=manga.id) }}" class="btn btn-sm btn-outline-secondary">View Details</a>
+                        {% if is_logged_in %}
+                        <form action="{{ url_for('add_to_cart', manga_id=manga.id) }}" method="POST">
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="btn btn-sm btn-primary">
+                                <i class="fas fa-shopping-cart"></i> Add to Cart
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                No manga available yet. Please check back later.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
 {% endblock %}

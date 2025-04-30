@@ -1,7 +1,73 @@
 {% extends "base.html" %}
 {% block title %}Home{% endblock %}
+
 {% block content %}
+<div class="container">
+    <div class="p-4 p-md-5 mb-4 text-white rounded bg-dark">
+        <div class="col-md-8 px-0">
+            <h1 class="display-4">Manga Crate</h1>
+            <p class="lead my-3">Discover a world of manga stories from your favorite authors. Browse our extensive collection and find your next adventure.</p>
+            <p class="lead mb-0"><a href="{{ url_for('manga') }}" class="text-white fw-bold">Browse Collection <i class="fas fa-arrow-right"></i></a></p>
+        </div>
+    </div>
 
-<h1>Home</h1>
+    <div class="row mb-2">
+        <div class="col-12">
+            <h2 class="pb-2 border-bottom">Featured Manga</h2>
+        </div>
+    </div>
 
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3">
+        {% for manga in featured_manga %}
+        <div class="col">
+            <div class="card shadow-sm h-100">
+                {% if manga.image %}
+                <img src="{{ manga.image }}" class="card-img-top" alt="{{ manga.name }}">
+                {% else %}
+                <div class="bg-secondary text-white d-flex justify-content-center align-items-center" style="height: 225px;">
+                    <i class="fas fa-book fa-3x"></i>
+                </div>
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ manga.name }}</h5>
+                    <p class="card-text text-muted">{{ manga.author }}</p>
+                    <p class="card-text">${{ "%.2f"|format(manga.price) }}</p>
+                    <div class="mt-auto d-flex justify-content-between align-items-center">
+                        <div class="btn-group">
+                            <a href="{{ url_for('manga_detail', manga_id=manga.id) }}" class="btn btn-sm btn-outline-secondary">View</a>
+                            {% if is_logged_in %}
+                            <form action="{{ url_for('add_to_cart', manga_id=manga.id) }}" method="POST">
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" class="btn btn-sm btn-primary">Add to Cart</button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12">
+            <p>No manga available yet. Check back soon!</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="row my-5">
+        <div class="col-md-6">
+            <div class="h-100 p-5 text-white bg-dark rounded-3">
+                <h2>Join Our Community</h2>
+                <p>Sign up to receive updates about new arrivals, special offers, and more.</p>
+                <a href="{{ url_for('register') }}" class="btn btn-outline-light">Sign Up</a>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="h-100 p-5 bg-light border rounded-3">
+                <h2>About Us</h2>
+                <p>We're passionate about manga and committed to bringing you the best selection at great prices.</p>
+                <a href="{{ url_for('about') }}" class="btn btn-outline-secondary">Learn More</a>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

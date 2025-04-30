@@ -1,7 +1,71 @@
 {% extends "base.html" %}
-{% block title %}Cart{% endblock %}
+{% block title %}Shopping Cart{% endblock %}
+
 {% block content %}
+<div class="container">
+    <h1 class="mb-4">Shopping Cart</h1>
 
-<h1>Cart</h1>
+    {% if cart_items %}
+    <form action="{{ url_for('update_cart') }}" method="POST">
+        <div class="table-responsive">
+            <table class="table table-striped align-middle">
+                <thead>
+                    <tr>
+                        <th>Manga</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Subtotal</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart_items %}
+                    <tr>
+                        <td>
+                            <a href="{{ url_for('manga_detail', manga_id=item.manga_id) }}" class="text-decoration-none">
+                                {{ item.name }}
+                            </a>
+                        </td>
+                        <td>${{ "%.2f"|format(item.price) }}</td>
+                        <td>
+                            <input type="number" name="quantity_{{ item.id }}" value="{{ item.quantity }}" min="1" max="10" class="form-control" style="width: 80px;">
+                        </td>
+                        <td>${{ "%.2f"|format(item.subtotal) }}</td>
+                        <td>
+                            <a href="{{ url_for('remove_from_cart', item_id=item.id) }}" class="btn btn-sm btn-danger">
+                                <i class="fas fa-trash"></i> Remove
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" class="text-end fw-bold">Total:</td>
+                        <td colspan="2" class="fw-bold">${{ "%.2f"|format(total) }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
 
+        <div class="d-flex justify-content-between mt-4">
+            <div>
+                <a href="{{ url_for('manga') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left"></i> Continue Shopping
+                </a>
+                <button type="submit" class="btn btn-outline-secondary ms-2">
+                    <i class="fas fa-sync"></i> Update Cart
+                </button>
+            </div>
+            <a href="{{ url_for('checkout') }}" class="btn btn-success">
+                Proceed to Checkout <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </form>
+    {% else %}
+    <div class="alert alert-info">
+        <p class="mb-0">Your cart is empty. <a href="{{ url_for('manga') }}">Browse our manga collection</a> to add items to your cart.</p>
+    </div>
+    {% endif %}
+</div>
 {% endblock %}
